@@ -1,0 +1,200 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Examination</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="text-center text-lg mt-5">
+    <countdown [config]="{ leftTime: examDetails?.duration }"></countdown>
+  </div>
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="finish()">
+      <ion-icon name="flag"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <form [formGroup]="form" class="mt-8">
+    <ion-slides formArrayName="items" class="slider-slides">
+      <ion-slide
+        *ngFor="let qB of examQuestions; let i = index; let last = last"
+        class="h-1/4"
+      >
+        <div class="no-flex w-full">
+          <small>Question {{ i + 1 }} of {{ examQuestions.length }}</small>
+          <div [innerHtml]="qB.question_title"></div>
+          <div [formGroupName]="i">
+            <ion-radio-group
+              *ngIf="qB.type == 'true_false'"
+              formControlName="submitted_answer"
+            >
+              <ion-list-header>
+                <ion-label> True or False </ion-label>
+              </ion-list-header>
+
+              <ion-item>
+                <ion-label>True</ion-label>
+                <ion-radio value="true"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>False</ion-label>
+                <ion-radio value="false"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+
+          <div [formGroupName]="i">
+            <ion-radio-group
+              *ngIf="qB.type == 'multiple_choice'"
+              formControlName="submitted_answer"
+            >
+              <ion-list-header>
+                <ion-label> Multiple Choice </ion-label>
+              </ion-list-header>
+              <ion-item *ngFor="let option of qB.options; let index = index">
+                <ion-label><div [innerHtml]="option"></div></ion-label>
+                <ion-radio value="{{ index + 1 }}"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+          <div [formGroupName]="i">
+            <ion-radio-group *ngIf="qB.type == 'fill_in_the_blanks'">
+              <ion-list-header>
+                <ion-label> Fill in the Blank</ion-label>
+              </ion-list-header>
+              <ion-item
+                *ngFor="let option of qB.options; let index = index"
+                formGroupName="submitted_answer"
+              >
+                <ion-label>Answer</ion-label>
+                <ion-input [formControlName]="index"></ion-input>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+          <div [formGroupName]="i">
+            <ion-radio-group *ngIf="qB.type == 'identification'">
+              <ion-list-header>
+                <ion-label> Identification</ion-label>
+              </ion-list-header>
+              <ion-item>
+                <ion-label>Answer</ion-label>
+                <ion-input formControlName="submitted_answer"></ion-input>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+          <div [formGroupName]="i">
+            <ion-radio-group *ngIf="qB.type == 'essay'">
+              <ion-list-header>
+                <ion-label> Essay</ion-label>
+              </ion-list-header>
+              <ion-item>
+                <ion-textarea
+                  formControlName="submitted_answer"
+                  rows="10"
+                  cols="20"
+                  placeholder="Enter answer here..."
+                ></ion-textarea>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+          <div [formGroupName]="i">
+            <ion-radio-group
+              *ngIf="qB.type == 'image'"
+              formControlName="submitted_answer"
+            >
+              <ion-list-header>
+                <ion-label> Image</ion-label>
+              </ion-list-header>
+              <ion-item *ngFor="let option of qB.options; let index = index">
+                <ion-radio value="{{ index + 1 }}"></ion-radio>
+                <ion-label>
+                  <img
+                    style="height: 40%"
+                    src="https://nelac-lms.online/uploads/online_exam/{{
+                      option
+                    }}"
+                  />
+                </ion-label>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+          <div [formGroupName]="i">
+            <ion-radio-group *ngIf="qB.type == 'enumeration'">
+              <ion-list-header>
+                <ion-label> Enumeration</ion-label>
+              </ion-list-header>
+
+              <ion-item
+                formArrayName="submitted_answer"
+                *ngFor="let option of qB.options; let optionIndex = index"
+              >
+                <ion-label>{{ optionIndex + 1 }}.</ion-label>
+                <ion-input [formControlName]="optionIndex"></ion-input>
+              </ion-item>
+            </ion-radio-group>
+          </div>
+          <div [formGroupName]="i">
+            <div *ngIf="qB.type == 'chronological_order'">
+              <ion-list-header>
+                <ion-label> ChronoLogical Orders</ion-label>
+              </ion-list-header>
+              <ion-reorder-group
+                (ionItemReorder)="reorderItems($event, qB.options, i)"
+                disabled="false"
+              >
+                <ion-reorder
+                  formArrayName="submitted_answer"
+                  *ngFor="let option of qB.options; let optionIndex = index"
+                >
+                  <ion-item>
+                    <ion-label>{{ optionIndex + 1 }}. {{ option }} </ion-label>
+                  </ion-item>
+                </ion-reorder>
+              </ion-reorder-group>
+            </div>
+          </div>
+
+          <div [formGroupName]="i">
+            <ion-radio-group *ngIf="qB.type == 'matching_type'">
+              <ion-list-header>
+                <ion-label> Matching Type</ion-label>
+              </ion-list-header>
+
+              <div class="flex">
+                <ion-item
+                  class="w-1/4"
+                  *ngFor="
+                    let option of qB.matching_type;
+                    let optionIndex = index
+                  "
+                >
+                  <ion-label>{{ optionIndex + 1 }}.</ion-label>
+                  <ion-input disabled [value]="option"></ion-input>
+                </ion-item>
+                <ion-item
+                  class="w-3/4"
+                  formArrayName="submitted_answer"
+                  *ngFor="
+                    let option of qB.matching_type;
+                    let optionIndex = index
+                  "
+                >
+                  <ion-label></ion-label>
+                  <ion-select
+                    interface="popover"
+                    [formControlName]="optionIndex"
+                  >
+                    <ion-select-option
+                      *ngFor="let option of qB.matching_type_answer"
+                      [value]="option"
+                      >{{ option }}</ion-select-option
+                    >
+                  </ion-select>
+                </ion-item>
+              </div>
+            </ion-radio-group>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slides>
+  </form>
+</ion-content>

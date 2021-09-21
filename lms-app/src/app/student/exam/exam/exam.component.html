@@ -1,0 +1,70 @@
+<!-- <ion-content>
+  <ion-list>
+    <ion-item *ngFor="let log of data">
+      <ion-label>
+        <h2>{{ log.id }}</h2>
+        <h3>{{ log.description }}</h3>
+        <p>{{ log.subject }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content> -->
+
+<ion-content>
+  <ion-title class="mt-4">Exam Today</ion-title>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12 *ngFor="let item of data">
+        <ion-card style="background-color: #{{ item.color }};">
+          <ion-card-header>
+            <ion-card-subtitle class="text-white">{{
+              item.title
+            }}</ion-card-subtitle>
+            <ion-card-title class="text-white">{{ item.name }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="bg-gray-50">
+            <ion-item slot="start">
+              <ion-datetime
+                #start1
+                readonly="true"
+                displayFormat="hh:mm A"
+                value="{{ item.time_start }}"
+              ></ion-datetime>
+              &nbsp; - &nbsp;
+              <ion-datetime
+                readonly="true"
+                displayFormat="hh:mm A"
+                value="{{ item.time_end }}"
+              ></ion-datetime>
+            </ion-item>
+            {{ item.time_start }}
+            {{ item.time_end }}
+            {{ today | date: 'HH:mm' }}
+            <ng-container *ngIf="item.timeAvailability">
+              <ion-button
+                [disabled]="item.online_exam_result_id == null ? false : true"
+                (click)="
+                  takeExam(
+                    item.duration,
+                    item.minimum_percentage,
+                    item.online_exam_id
+                  )
+                "
+                slot="end"
+                expand="block"
+                >{{
+                  item.online_exam_result_id == null
+                    ? 'Take Exam'
+                    : 'Waiting For Result'
+                }}
+              </ion-button>
+            </ng-container>
+            <ng-container *ngIf="!item.timeAvailability">
+              <span>Exam is not available</span>
+            </ng-container>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

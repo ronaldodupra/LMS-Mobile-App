@@ -1,0 +1,39 @@
+<ion-content class="h-full">
+  <div id="container">
+    <div class="p-5">
+      <div class="font-bold text-lg">Login</div>
+      <form [formGroup]="formGroup">
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating"> <span>Username</span></ion-label>
+            <ion-input type="text" formControlName="username"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">
+              <span>Password</span>
+            </ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button expand="block" (click)="login()">
+          <ion-icon name="log-in-outline"></ion-icon> Login</ion-button
+        >
+        <div class="text-center">
+          <small class="error">{{ errorMessage }}</small>
+        </div>
+        <div class="mt-5">
+          <a
+            class="font-bold text-gray-500"
+            [routerLink]="['/', 'forgot-password']"
+            >Forgot Password</a
+          >
+          <a
+            class="float-right font-bold text-gray-500"
+            [routerLink]="['/site', 'register']"
+            >Register</a
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

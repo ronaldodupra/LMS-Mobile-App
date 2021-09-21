@@ -1,0 +1,15 @@
+<ion-content>
+  <ion-list>
+    <ion-menu-toggle auto-hide="false">
+      <ion-item
+        *ngFor="let menu of menuItems"
+        button
+        [routerLink]="menu.route"
+        routerDirection="root"
+      >
+        <ion-icon slot="start" [name]="menu.icon" color="primary"></ion-icon>
+        <ion-label> {{ menu.label }} </ion-label>
+      </ion-item>
+    </ion-menu-toggle>
+  </ion-list>
+</ion-content>
